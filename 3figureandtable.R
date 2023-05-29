@@ -36,6 +36,51 @@ p + stat_function(fun = function(x) 30/(1+exp(-x)), n = 100)  + geom_hline(yinte
   annotate("text", x = -3.5, y = 15+(7.5*(1)) + ((15+(7.5*(2))) - (15+(7.5*(1))))/2, label = "D'", fontface=2, size = 4) +
   theme(text = element_text(size = 15))
 
+#(그림 1) 대안
+p <- ggplot(data = data.frame(x = c(-3, 3)), aes(x))
+p + stat_function(fun = function(x) 30/(1+exp(-x)), n = 100)  + geom_hline(yintercept = c(0,30), linetype = 'solid') + 
+  stat_function(fun = function(x) 15+(7.5*x), n = 100) + 
+  #테마 시작
+  scale_x_continuous(name = "특질 수준",breaks = seq(-3,3,by = 1)) + 
+  scale_y_continuous(name = "원점수",breaks = seq(0,30,by = 5),limits = c(0,30)) + theme_bw() +
+  theme(plot.background = element_blank(),panel.grid.major = element_blank(),panel.grid.minor = element_blank()) +
+  theme(text = element_text(size = 15)) +
+  #테마 끝
+  #X축 ABCD 시작
+  geom_segment(aes(x = -2,y = 0,xend = -1,yend = 0),arrow = arrow(end = "both",type = "open",length = unit(0.25, "cm")),size = 0.5) +
+  geom_segment(aes(x = -2,y = 0,xend = -1,yend = 0),arrow = arrow(end = "both",type = "open",length = unit(0.25, "cm")),size = 0.5) + 
+  geom_segment(aes(x = 0,y = 0,xend = 1,yend = 0),arrow = arrow(end = "both",type = "closed",length = unit(0.25, "cm")),size = 0.5) + 
+  geom_segment(aes(x = -1,y = 0,xend = -0,yend = 0),arrow = arrow(end = "both",type = "open",length = unit(0.25, "cm")),size = 0.5) + 
+  geom_segment(aes(x = 1,y = 0,xend = 2,yend = 0),arrow = arrow(end = "both",type = "closed",length = unit(0.25, "cm")),size = 0.5) + 
+  annotate("text", x = -1.5, y = 0.75, label = "A", fontface=2, size = 4) + 
+  annotate("text", x = -0.5, y = 0.75, label = "B", fontface=2, size = 4) + 
+  annotate("text", x = 0.5, y = 0.75, label = "C", fontface=2, size = 4) + 
+  annotate("text", x = 1.5, y = 0.75, label = "D", fontface=2, size = 4) + 
+  #X축 ABCD 끝
+  #세로선 시작
+  geom_segment(aes(x = -1,y = 0,xend = -1,yend = 15+(7.5*(-1))),linetype=2) + 
+  geom_segment(aes(x = 0,y = 0,xend = 0,yend = 15+(7.5*(0))),linetype=2) +
+  geom_segment(aes(x = 1,y = 0,xend = 1,yend = 30/(1+exp(-(1)))),linetype=2) + 
+  geom_segment(aes(x = 2,y = 0,xend = 2,yend = 30/(1+exp(-(2)))),linetype=2) + 
+  #세로선 끝
+  #가로선 시작
+  geom_segment(aes(x = -1,y = 15+(7.5*(-1)),xend = -3.3,yend = 15+(7.5*(-1))),linetype=2) +
+  geom_segment(aes(x = 0,y = 15+(7.5*(0)),xend = -3.3,yend = 15+(7.5*(0))),linetype=2) + 
+  geom_segment(aes(x = 1,y = 30/(1+exp(-(1))),xend = -3.3,yend = 30/(1+exp(-(1)))),linetype=2) + 
+  geom_segment(aes(x = 2,y = 30/(1+exp(-(2))),xend = -3.3,yend = 30/(1+exp(-(2)))),linetype=2) +
+  #가로선 끝
+  #Y축 A'B'C'D 시작
+  geom_segment(aes(x = -3.1,y = 0,xend = -3.1,yend = 15+(7.5*(-1))),arrow = arrow(end = "both",type = "open",length = unit(0.25, "cm")),size = 0.5) +
+  geom_segment(aes(x = -3.3,y = 15+(7.5*(-1))),xend = -3.3,yend = 15+(7.5*(0)),arrow = arrow(end = "both",type = "open",length = unit(0.25, "cm")),size = 0.5) +
+  geom_segment(aes(x = -3.1,y = 30/(1+exp(-(0))),xend = -3.1,yend = 30/(1+exp(-(1)))),arrow = arrow(end = "both",type = "closed",length = unit(0.25, "cm")),size = 0.5) +
+  geom_segment(aes(x = -3.3,y = 30/(1+exp(-(1))),xend = -3.3,yend = 30/(1+exp(-(2)))),arrow = arrow(end = "both",type = "closed",length = unit(0.25, "cm")),size = 0.5) +
+  annotate("text", x = -3.5, y = 15+(7.5*(-2)) + ((15+(7.5*(-1))) - (15+(7.5*(-2))))/2, label = "A'", fontface=2, size = 4) + 
+  annotate("text", x = -3.5, y = 15+(7.5*(-1)) + ((15+(7.5*(0))) - (15+(7.5*(-1))))/2, label = "B'", fontface=2, size = 4) + 
+  annotate("text", x = -3.5, y = 30/(1+exp(-(0))) + (30/(1+exp(-(1))) - 30/(1+exp(-(0))))/2, label = "C'", fontface=2, size = 4) + 
+  annotate("text", x = -3.5, y = 30/(1+exp(-(1))) + (30/(1+exp(-(2))) - 30/(1+exp(-(1))))/2, label = "D'", fontface=2, size = 4)
+  #Y축 A'B'C'D 끝
+
+
 #(그림 2) 세 범주를 갖는 문항의 범주반응함수 
 p <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) 
 p +
