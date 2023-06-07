@@ -78,7 +78,7 @@ p + stat_function(fun = function(x) 30/(1+exp(-x)), n = 100)  + geom_hline(yinte
   annotate("text", x = -3.5, y = 15+(7.5*(-1)) + ((15+(7.5*(0))) - (15+(7.5*(-1))))/2, label = "B'", fontface=2, size = 4) + 
   annotate("text", x = -3.5, y = 30/(1+exp(-(0))) + (30/(1+exp(-(1))) - 30/(1+exp(-(0))))/2, label = "C'", fontface=2, size = 4) + 
   annotate("text", x = -3.5, y = 30/(1+exp(-(1))) + (30/(1+exp(-(2))) - 30/(1+exp(-(1))))/2, label = "D'", fontface=2, size = 4)
-  #Y축 A'B'C'D 끝
+#Y축 A'B'C'D 끝
 
 
 #(그림 2) 세 범주를 갖는 문항의 범주반응함수 
@@ -111,7 +111,7 @@ A = ggplot(data = sf, aes(x = SUM)) +
   scale_y_continuous("빈도",sec.axis=sec_axis(
     trans = ~./(max(table(sf$SUM)) / max(density(sf$SUM)$y)),name = "밀도"))
 
-
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%select(SUM)%>%skew(),digits = 2)))
 B = ggplot(data = sf, aes(sample = SUM)) + stat_qq()  + theme_bw() +  stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
@@ -119,7 +119,13 @@ B = ggplot(data = sf, aes(sample = SUM)) + stat_qq()  + theme_bw() +  stat_qq_li
   scale_y_continuous("표본 분위수") + 
   scale_x_continuous("정규분포 분위수")+
   theme(axis.text = element_text(size = 13),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13)) + 
+  annotate(geom = "text",
+           label = deparse(myexpr),
+           parse=TRUE,
+           x = 1.3,
+           y = 3.5,
+           size = 5.5)
 TOPA = plot_grid(A,B,ncol=2,rel_widths = c(2.9,1),rel_heights = 0.5)
 
 #SUM boxplot + qq
@@ -133,7 +139,7 @@ A = ggplot(sf,aes(x = agegroup,y = SUM)) + theme(axis.text = element_text(size =
         legend.text=element_text(size=13),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령")
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령")
 
 
 myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(SUM)%>%skew(),digits = 2)))
@@ -142,7 +148,7 @@ B = ggplot(data = filter(sf,agegroup == 1), aes(sample = SUM)) + stat_qq()  + th
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("~59")+
+  scale_x_continuous(" ") + ggtitle("55~64")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) + 
   annotate(geom = "text",
            label = deparse(myexpr),
@@ -156,7 +162,7 @@ C = ggplot(data = filter(sf, agegroup == 2), aes(sample = SUM)) + stat_qq()  + t
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("60~69")+
+  scale_x_continuous(" ") + ggtitle("65~74")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) + 
   annotate(geom = "text",
            label = deparse(myexpr),
@@ -164,19 +170,19 @@ C = ggplot(data = filter(sf, agegroup == 2), aes(sample = SUM)) + stat_qq()  + t
            x = 1.1,
            y = 4,
            size = 5.5)
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(SUM)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(SUM)%>%skew(),digits = 1)))
 D = ggplot(data = filter(sf, agegroup == 3), aes(sample = SUM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("70~79")+
+  scale_x_continuous(" ") + ggtitle("75~84")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) + 
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.1,
-           y = 4,
+           y = 4.5,
            size = 5.5)
 myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==4)%>%select(SUM)%>%skew(),digits = 1)))
 E = ggplot(data = filter(sf, agegroup == 4), aes(sample = SUM)) + stat_qq()  + theme_bw() + stat_qq_line() +
@@ -184,13 +190,13 @@ E = ggplot(data = filter(sf, agegroup == 4), aes(sample = SUM)) + stat_qq()  + t
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("80~")+
+  scale_x_continuous(" ") + ggtitle("85~")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 1.1,
-           y = -4,
+           x = 0.9,
+           y = -6.5,
            size = 5.5)
 posterA = grid.arrange(A, arrangeGrob(B,C,D,E,ncol=4), nrow = 2, heights = c(0.5,0.5))
 grid.arrange(TOPA,posterA, ncol = 1, heights = c(0.25,0.5))
@@ -210,7 +216,7 @@ A = ggplot(data = sf, aes(x = CFA)) +
 
 
 
-
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%select(CFA)%>%skew(),digits = 2)))
 B = ggplot(data = sf, aes(sample = CFA)) + stat_qq()  + theme_bw() +  stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
@@ -218,7 +224,13 @@ B = ggplot(data = sf, aes(sample = CFA)) + stat_qq()  + theme_bw() +  stat_qq_li
   scale_y_continuous("표본 분위수") + 
   scale_x_continuous("정규분포 분위수")+
   theme(axis.text = element_text(size = 13),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13)) + 
+  annotate(geom = "text",
+           label = deparse(myexpr),
+           parse=TRUE,
+           x = 1.1,
+           y = -4,
+           size = 5.5)
 TOPA = plot_grid(A,B,ncol=2,rel_widths = c(2.9,1),rel_heights = 0.5)
 
 #CFA boxplot + qq
@@ -232,7 +244,7 @@ A = ggplot(sf,aes(x = agegroup,y = CFA)) + theme(axis.text = element_text(size =
         legend.text=element_text(size=13),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령")
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령")
 
 myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(CFA)%>%skew(),digits = 2)))
 B = ggplot(data = filter(sf,agegroup == 1), aes(sample = CFA)) + stat_qq()  + theme_bw() + stat_qq_line() +
@@ -240,13 +252,13 @@ B = ggplot(data = filter(sf,agegroup == 1), aes(sample = CFA)) + stat_qq()  + th
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("~59")+
+  scale_x_continuous(" ") + ggtitle("55~64")+
   theme(axis.text = element_text(size = 12)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.1,
-           y = -4.1,
+           y = -3.9,
            size = 5.5)
 
 
@@ -256,28 +268,28 @@ C = ggplot(data = filter(sf, agegroup == 2), aes(sample = CFA)) + stat_qq()  + t
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("60~69")+
+  scale_x_continuous(" ") + ggtitle("65~74")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.1,
-           y = -4,
+           y = -3.8,
            size = 5.5)
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(CFA)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(CFA)%>%skew(),digits = 1)))
 D = ggplot(data = filter(sf, agegroup == 3), aes(sample = CFA)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("70~79")+
+  scale_x_continuous(" ") + ggtitle("75~84")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.1,
-           y = -4,
+           y = -3.8,
            size = 5.5)
 
 myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==4)%>%select(CFA)%>%skew(),digits = 1)))
@@ -286,12 +298,12 @@ E = ggplot(data = filter(sf, agegroup == 4), aes(sample = CFA)) + stat_qq()  + t
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("80~")+
+  scale_x_continuous(" ") + ggtitle("85~")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 1.1,
+           x = 1,
            y = -5.55,
            size = 5.5)
 
@@ -309,7 +321,7 @@ par(new=TRUE)
 plot(Theta,gpcm.info,type = 'l',cex = 1,cex.axis=1.2,
      lty = "dashed",ylim = c(0,30),ylab = bquote(~I(theta)), xlab=bquote(~theta))
 legend("topleft",legend = c("PCM","GPCM"),
-       cex=1.25,lty=c(1,2),text.font=2)
+       cex=0.6,lty=c(1,2),text.font=4.5)
 
 
 #(그림 6) 전체 표본 및 연령집단별 K-MMSE PCM특질점수 분포
@@ -325,6 +337,7 @@ A = ggplot(data = sf, aes(x = PCM)) +
   scale_y_continuous("빈도",sec.axis=sec_axis(
     trans = ~./(max(table(sf$PCM)) / max(density(sf$PCM)$y)),name = "밀도"))
 
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%select(PCM)%>%skew(),digits = 2)))
 B = ggplot(data = sf, aes(sample = PCM)) + stat_qq()  + theme_bw() +  stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
@@ -332,7 +345,13 @@ B = ggplot(data = sf, aes(sample = PCM)) + stat_qq()  + theme_bw() +  stat_qq_li
   scale_y_continuous("표본 분위수") + 
   scale_x_continuous("정규분포 분위수")+
   theme(axis.text = element_text(size = 13),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13)) + 
+  annotate(geom = "text",
+           label = deparse(myexpr),
+           parse=TRUE,
+           x = 1.1,
+           y = -3,
+           size = 5.5)
 TOPA = plot_grid(A,B,ncol=2,rel_widths = c(2.9,1),rel_heights = 0.5)
 
 #PCM boxplot + qq
@@ -346,68 +365,69 @@ A = ggplot(sf,aes(x = agegroup,y = PCM)) + theme(axis.text = element_text(size =
         legend.text=element_text(size=13),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령")
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령")
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(PCM)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(PCM)%>%skew(),digits = 1)))
 B = ggplot(data = filter(sf,agegroup == 1), aes(sample = PCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("~59")+
+  scale_x_continuous(" ") + ggtitle("55~64")+
   theme(axis.text = element_text(size = 12)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.35,
-           y = -3,
+           y = -2.85,
            size = 5.5)
 
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==2)%>%select(PCM)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==2)%>%select(PCM)%>%skew(),digits = 1)))
 C = ggplot(data = filter(sf, agegroup == 2), aes(sample = PCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("60~69")+
+  scale_x_continuous(" ") + ggtitle("65~74")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
            x = 1.35,
-           y = -2.8,
+           y = -2.95,
            size = 5.5)
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(PCM)%>%skew(),digits = 2)))
+#myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(PCM)%>%skew(),digits = 1)))
+myexpr = substitute(italic(g[1])==k,list(k=-0.1))
 D = ggplot(data = filter(sf, agegroup == 3), aes(sample = PCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("70~79")+
+  scale_x_continuous(" ") + ggtitle("75~84")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 1.35,
+           x = 1,
            y = -3,
            size = 5.5)
 
 #myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==4)%>%select(PCM)%>%skew(),digits = 1)))
-myexpr = substitute(italic(g[1])==k,list(k=0))
+myexpr = substitute(italic(g[1])==k,list(k=0.1))
 E = ggplot(data = filter(sf, agegroup == 4), aes(sample = PCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("80~")+
+  scale_x_continuous(" ") + ggtitle("85~")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 0.5,
-           y = -3.3,
+           x = 1.1,
+           y = -3.45,
            size = 5.5)
 
 posterA = grid.arrange(A, arrangeGrob(B,C,D,E,ncol=4), nrow = 2, heights = c(0.5,0.5))
@@ -427,6 +447,8 @@ A = ggplot(data = sf, aes(x = GPCM)) +
   scale_x_continuous("GPCM특질점수") + #n 뒤에 ,color = "black", size =  //  걍 이거 해 ,limits = c(-8.5,4)
   scale_y_continuous("빈도",sec.axis=sec_axis(
     trans = ~./(max(table(sf$GPCM)) / max(density(sf$GPCM)$y)),name = "밀도"))
+
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%select(GPCM)%>%skew(),digits = 1)))
 B = ggplot(data = sf, aes(sample = GPCM)) + stat_qq()  + theme_bw() +  stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
@@ -434,7 +456,13 @@ B = ggplot(data = sf, aes(sample = GPCM)) + stat_qq()  + theme_bw() +  stat_qq_l
   scale_y_continuous("표본 분위수") + 
   scale_x_continuous("정규분포 분위수")+
   theme(axis.text = element_text(size = 13),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13)) + 
+  annotate(geom = "text",
+           label = deparse(myexpr),
+           parse=TRUE,
+           x = 1.25,
+           y = -3.3,
+           size = 5.5)
 TOPA = plot_grid(A,B,ncol=2,rel_widths = c(2.9,1),rel_heights = 0.5)
 
 #GPCM boxplot + qq
@@ -448,15 +476,15 @@ A = ggplot(sf,aes(x = agegroup,y = GPCM)) + theme(axis.text = element_text(size 
         legend.text=element_text(size=13),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령")
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령")
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(GPCM)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==1)%>%select(GPCM)%>%skew(),digits = 1)))
 B = ggplot(data = filter(sf,agegroup == 1), aes(sample = GPCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("~59")+
+  scale_x_continuous(" ") + ggtitle("55~64")+
   theme(axis.text = element_text(size = 12)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
@@ -466,13 +494,13 @@ B = ggplot(data = filter(sf,agegroup == 1), aes(sample = GPCM)) + stat_qq()  + t
            size = 5.5)
 
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==2)%>%select(GPCM)%>%skew(),digits = 2)))
+myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==2)%>%select(GPCM)%>%skew(),digits = 1)))
 C = ggplot(data = filter(sf, agegroup == 2), aes(sample = GPCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("60~69")+
+  scale_x_continuous(" ") + ggtitle("65~74")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
@@ -481,18 +509,19 @@ C = ggplot(data = filter(sf, agegroup == 2), aes(sample = GPCM)) + stat_qq()  + 
            y = -2.9,
            size = 5.5)
 
-myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(GPCM)%>%skew(),digits = 2)))
+#myexpr = substitute(italic(g[1])==k,list(k=format(sf%>%filter(agegroup==3)%>%select(GPCM)%>%skew(),digits = 1)))
+myexpr = substitute(italic(g[1])==k,list(k=0))
 D = ggplot(data = filter(sf, agegroup == 3), aes(sample = GPCM)) + stat_qq()  + theme_bw() + stat_qq_line() +
   theme(plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("70~79")+
+  scale_x_continuous(" ") + ggtitle("75~84")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 1.35,
+           x = 1.5,
            y = -2.9,
            size = 5.5)
 
@@ -502,13 +531,13 @@ E = ggplot(data = filter(sf, agegroup == 4), aes(sample = GPCM)) + stat_qq()  + 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
   scale_y_continuous(" ") + 
-  scale_x_continuous(" ") + ggtitle("80~")+
+  scale_x_continuous(" ") + ggtitle("85~")+
   theme(axis.text = element_text(size = 11)) + theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom = "text",
            label = deparse(myexpr),
            parse=TRUE,
-           x = 1.1,
-           y = -3.2,
+           x = 1.3,
+           y = -3.35,
            size = 5.5)
 
 posterA = grid.arrange(A, arrangeGrob(B,C,D,E,ncol=4), nrow = 2, heights = c(0.5,0.5))
@@ -561,7 +590,7 @@ ggplot(data = tablep, aes(x = agegroup, y = value, group = name)) +
   theme(legend.key.width = unit(2,'cm')) +
   theme(text = element_text(size = 18)) + 
   scale_y_continuous(name = "피어슨 상관계수") +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령") +
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령") +
   geom_text_repel(
     aes(label = name), data = pstarts,
     fontface ="plain", color = "black", size = 5
@@ -591,26 +620,11 @@ ggplot(data = tablekp, aes(x = agegroup, y = value, group = name)) +
   theme(legend.key.width = unit(2,'cm')) +
   theme(text = element_text(size = 20)) + 
   scale_y_continuous(name = "카파 계수") +
-  scale_x_discrete(labels = c("~59", "60~69","70~79","80~"), name = "연령")+
+  scale_x_discrete(labels = c("55~64", "65~74","75~84","85~"), name = "연령")+
   geom_text_repel(
     aes(label = name), data = kpstarts,
     fontface ="plain", color = "black", size = 5
   )
-
-
-#부록 I. K-MMSE 부분점수 모형의 문항특성곡선 및 검사특성곡선
-for(i in 1:19) {
-  assign(paste0("plot_",i),itemplot(results.pcm,i, type = 'trace', main = paste0("문항",i) , auto.key = none, par.settings = bwtheme))
-}
-plot_20 = plot(results.pcm, type = 'score',main = "검사특성곡선", theta_lim = c(-6,6), lwd=1,par.settings=bwtheme)
-grid.arrange(plot_1,plot_2,plot_3,plot_4,plot_5,plot_6,plot_7,plot_8,plot_9,plot_10,plot_11,plot_12,plot_13,plot_14,plot_15,plot_16,plot_17,plot_18,plot_19,plot_20,ncol=5,vp=viewport(width=1, height=0.95))
-
-#부록 II. K-MMSE 일반화부분점수 모형의 문항특성곡선 및 검사특성곡선
-for(i in 1:19) {
-  assign(paste0("plot_",i),itemplot(results.gpcm,i, type = 'trace', main = paste0("문항",i) , auto.key = none, par.settings = bwtheme))
-}
-plot_20 = plot(results.gpcm, type = 'score',main = "검사특성곡선", theta_lim = c(-6,6), lwd=1,par.settings=bwtheme)
-grid.arrange(plot_1,plot_2,plot_3,plot_4,plot_5,plot_6,plot_7,plot_8,plot_9,plot_10,plot_11,plot_12,plot_13,plot_14,plot_15,plot_16,plot_17,plot_18,plot_19,plot_20,ncol=5,vp=viewport(width=1, height=0.95))
 
 
 
@@ -636,6 +650,21 @@ itemfit(results.pcm,'infit') #문항 적합도
 #(표 5) K-MMSE 일반화부분점수모형의 문항 특성
 coef(results.gpcm, IRTpars=TRUE, simplify=TRUE)
 itemfit(results.gpcm,'infit') #문항 적합도
+
+
+#부록 I. K-MMSE 부분점수 모형의 문항특성곡선 및 검사특성곡선
+for(i in 1:19) {
+  assign(paste0("plot_",i),itemplot(results.pcm,i, type = 'trace', main = paste0("문항",i) , auto.key = none, par.settings = bwtheme))
+}
+plot_20 = plot(results.pcm, type = 'score',main = "검사특성곡선", theta_lim = c(-6,6), lwd=1,par.settings=bwtheme)
+grid.arrange(plot_1,plot_2,plot_3,plot_4,plot_5,plot_6,plot_7,plot_8,plot_9,plot_10,plot_11,plot_12,plot_13,plot_14,plot_15,plot_16,plot_17,plot_18,plot_19,plot_20,ncol=5,vp=viewport(width=1, height=0.95))
+
+#부록 II. K-MMSE 일반화부분점수 모형의 문항특성곡선 및 검사특성곡선
+for(i in 1:19) {
+  assign(paste0("plot_",i),itemplot(results.gpcm,i, type = 'trace', main = paste0("문항",i) , auto.key = none, par.settings = bwtheme))
+}
+plot_20 = plot(results.gpcm, type = 'score',main = "검사특성곡선", theta_lim = c(-6,6), lwd=1,par.settings=bwtheme)
+grid.arrange(plot_1,plot_2,plot_3,plot_4,plot_5,plot_6,plot_7,plot_8,plot_9,plot_10,plot_11,plot_12,plot_13,plot_14,plot_15,plot_16,plot_17,plot_18,plot_19,plot_20,ncol=5,vp=viewport(width=1, height=0.95))
 
 
 #그외
