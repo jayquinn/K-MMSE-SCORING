@@ -1,8 +1,25 @@
-#23/24
-#score.SUM %>% quantile(probs = c(0.294944247))
-cutoff = 0.294944247
-dat<-read.csv("C:/git/K-MMSE-SCORING/mmse.csv",header=T,sep=",")
+rawdata = read.csv("mmse.csv",header=T,sep=",")
+rawdata %>% select(C401:C419,year,gender) -> dat
+#C417: Klosa자료상 읽기성공시 1, 눈감기 성공시 3으로 코딩되어 2점 만점을 갖는 문항으로 입력되어있지만
+#MMSE의 채점 규칙에 따라 눈감기까지 성공해야만 점수 획득하는 1점 만점을 갖는 이분 문항으로 수정하여 사용함. 
+dat$C417<-ifelse(dat$C417==3,1,
+                     ifelse(dat$C417==1,0,dat$C417))
+#데이터 변환
+dat %>% 
+  mutate(across(starts_with("c"),
+                ~ case_when(
+                  .==-8 ~ NA_real_,
+                  .==-9 ~ 0,
+                  .== 5 ~ 0,
+                  TRUE ~ .)),
+         age = 2018 - year,.keep = "unused") %>%
+  filter(complete.cases(across(starts_with("c")))) -> response
+
+
 attach(dat) #코드 정리시작
+# -9 모르겠음: 0 처리
+# -8 응답거부: NA 처리
+
 #401 시간지남력 - 연월일 0123 
 a401<-ifelse(C401==3,3,
              ifelse(C401==2,2,
@@ -177,8 +194,11 @@ itemfit.GPCM <- itemfit(results.gpcm,'infit')
 M2(results.gpcm)
 
 #점수 취합
-score.frame<-cbind(score.SUM,score.CFA,score.PCM,score.GPCM,response$diag,response$age,response$gender); colnames(score.frame)<-c("SUM","CFA","PCM","GPCM","diag","age","gender")
+score.frame<-cbind(score.SUM,score.CFA,score.PCM,score.GPCM,response$diag,response$age,response$gender)
+colnames(score.frame)<-c("SUM","CFA","PCM","GPCM","diag","age","gender")
 as.data.frame(score.frame) -> score.frame
+
+cutoff = mean(score.frame$SUM < 24)
 
 #23/24기준에 마커
 score.frame %>% mutate(markerSUM = case_when(SUM <= quantile(score.frame$SUM,cutoff) ~ '1',
