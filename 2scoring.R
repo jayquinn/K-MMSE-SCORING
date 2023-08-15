@@ -73,9 +73,8 @@ score.frame %>% mutate(markerSUM = case_when(SUM <= quantile(score.frame$SUM,cut
                        markerPCM = case_when(PCM <= quantile(score.frame$PCM,cutoff) ~ '1',
                                              PCM > quantile(score.frame$PCM,cutoff) ~ '0'),
                        markerGPCM = case_when(GPCM <= quantile(score.frame$GPCM,cutoff) ~ '1',
-                                              GPCM > quantile(score.frame$GPCM,cutoff) ~ '0')) -> sf
-
-sf %>% mutate(agegroup = case_when(age >= 85 ~ '4',
+                                              GPCM > quantile(score.frame$GPCM,cutoff) ~ '0')) %>%
+  mutate(agegroup = case_when(age >= 85 ~ '4',
                                    age >= 75 & age < 85 ~ '3',
                                    age >= 65 & age < 75 ~ '2',
                                    age >= 55 & age < 65 ~ '1')) %>%
